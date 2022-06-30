@@ -19,7 +19,7 @@ dfPred = pd.read_csv("feature-predecessors-5.csv")
 
 
 
-dfData = pd.read_csv("input.csv")
+dfData = pd.read_csv("export-2.csv")
 #print(dfData)
 
 #print(df1)
@@ -41,6 +41,7 @@ def addToDF (dfData,index, stack):
         print(cur.values)
         line = pd.DataFrame(data = cur.values, columns = dfData.columns)
         dfData = pd.concat([dfData.iloc[:index], line, dfData.iloc[index:]]).reset_index(drop=True)
+        dfData.drop_duplicates(inplace = True)
         print("NEW VERSION")
         print(dfData)
    
@@ -92,7 +93,7 @@ for ind in dfPred.index:
         #dfData.drop(labels=None, axis=0, index=predindex, columns=None, level=None, inplace=True, errors='raise')
         dfData = pd.concat([dfData.iloc[:index1], line, dfData.iloc[index1:]]).reset_index(drop=True)
         dfData.drop_duplicates(inplace = True)
-    dfData.to_csv('test.csv')
+
 
 print(len(dfData))
 
@@ -114,13 +115,7 @@ for ind in dfData.index:
        
         
 
-    dfData.to_csv('test.csv')
+
       
-
+dfData.to_csv('test.csv')
 print(len(dfData))
-
-
-        
-
-
-
