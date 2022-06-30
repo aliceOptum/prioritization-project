@@ -57,8 +57,12 @@ from xml.etree.ElementPath import prepare_descendant
 from openpyxl import load_workbook
 import pandas as pd
 import datetime
+import demo
+
+demo.run()
  
-#load excel file
+
+#modify this to the excel file you are writing to 
 workbook = load_workbook(filename="Agile Gantt chart1.xlsx")
 workbook.iso_dates = True
  
@@ -67,8 +71,11 @@ sheet = workbook.active
 
 number = 11
  
+#modify this to the altered csv file name
 dfData = pd.read_csv("test.csv")
+#modify this to the file with the predecessors
 pred  = pd.read_csv("feature-predecessors-5.csv")
+#modify this to the file with the successors
 succ = pd.read_csv("feature-successors-5.csv")
 #modify the desired cell
 
@@ -103,15 +110,9 @@ for ind in dfData.index:
     number += 1
 
 
-    
-    """
-    if dfData['Formatted ID'][ind] == succ['ID'][ind]:
-        sheet[succval] = succ['Successor ID'][ind]"""
-
 for cell in sheet['C']:
     if cell.value in pred['ID'].values:
         predval = "E"+ str(cell.row)
-        #print(predval)
         index = pred[pred['ID']==cell.value]
         stvalue = index['Predecessor ID'].values[0]
         if stvalue in dfData['Formatted ID'].values:
@@ -130,5 +131,5 @@ for cell in sheet['C']:
        
 
  
-#save the file
+#modify this to file where gantt chart is displayed
 workbook.save(filename="Agile Gantt chart1.xlsx")
