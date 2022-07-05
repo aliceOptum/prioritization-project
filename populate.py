@@ -26,14 +26,16 @@ def convertFeatures (features):
         output  = "DM"
     elif "Quotes, Install and Bill" in features:
         output  = "QIB"
-    elif features == "Speciality" in features:
+    elif "Specialty" in features:
         output = "SP"
-    elif "Consumer Engagement" in features:
-        output  = "CE"
+    elif "Consumer Engagement, Digital Therapeutic and Innovation Products	" in features:
+        output  = "CE DTI"
     elif "Commercial Medical Product" in features:
         output  = "CMP"
     elif "Broker and Employer Experience" in features:
         output = "BEE"
+    elif "PCP - Provider Optimization (Cybertron)" in features:
+        output =  "POC"
     elif "Member Experience" in features:
         output  = "ME"
     elif "Provider Experience" in features:
