@@ -1,9 +1,11 @@
 def getStringDate (date):
-    live = str(date)
-    liveend = len(live)
-    input = live[:liveend-2]+"20"+live[liveend-2:]
-    
-    return(input)
+    try:
+        live = str(date)
+        input = datetime.datetime.strptime(live, "%Y-%m-%d")
+        return(input)
+    except:
+        return(date)
+
 def colorConverter (color):
     output = "NA"
     if color == "#107c1e":
@@ -58,12 +60,22 @@ from openpyxl import load_workbook
 import pandas as pd
 import datetime
 import demo
+import argparse
 
-demo.run()
+
+parser = argparse.ArgumentParser()
+parser.add_argument("predecessors", help ="enter the name of the csv file containing predecessors")
+parser.add_argument("successors", help ="enter the name of the csv file containing successors")
+parser.add_argument("STs", help ="enter the name of the csv file containing all of the STs")
+parser.add_argument("blank", help ="enter the name of the blank excel template")
+args = parser.parse_args()
+
+
+demo.run(args.predecessors, args.successors, args.STs)
  
 
 #modify this to the excel file you are writing to 
-workbook = load_workbook(filename="Agile Gantt chart1.xlsx")
+workbook = load_workbook(filename= args.blank)
 workbook.iso_dates = True
  
 #open workbook
@@ -72,11 +84,11 @@ sheet = workbook.active
 number = 11
  
 #modify this to the altered csv file name
-dfData = pd.read_csv("test.csv")
+dfData = pd.read_csv(args.STs)
 #modify this to the file with the predecessors
-pred  = pd.read_csv("feature-predecessors-5.csv")
+pred  = pd.read_csv(args.predecessors)
 #modify this to the file with the successors
-succ = pd.read_csv("feature-successors-5.csv")
+succ = pd.read_csv(args.successors)
 #modify the desired cell
 
 
@@ -90,46 +102,49 @@ for ind in dfData.index:
     live1 = "L" + str(number)
     color = "G" + str(number)
     project = "B" + str(number)
-    sheet[format_ID] = value
     name = "D" + str(number)
     predval = "E" + str(number)
     succval = "F" + str(number)
     percentage = str(dfData['Percent Done By Story Count'][ind])
-    sheet[progress] = percentage
+
+    check = colorConverter(str(dfData['Display Color'][ind]))
+
+    if check != "Not Started":
+        sheet[progress] = percentage
+        sheet[format_ID] = value
+
+        sheet[project] = convertFeatures(dfData['Project'][ind])
+
+        sheet[start_date] = getStringDate(dfData['Planned Start Date'][ind])
+        sheet[end_date] = getStringDate(dfData['Planned End Date'][ind])
+        sheet[color] = colorConverter(str(dfData['Display Color'][ind]))
+        sheet[name] = dfData['Name'][ind]
+
+        sheet[live1] = getStringDate(dfData['Go Live Date'][ind]) 
+
+        number += 1
 
 
-    sheet[project] = convertFeatures(dfData['Project'][ind])
+    for cell in sheet['C']:
+        if cell.value in pred['ID'].values:
+            predval = "E"+ str(cell.row)
+            index = pred[pred['ID']==cell.value]
+            stvalue = index['Predecessor ID'].values[0]
+            if stvalue in dfData['Formatted ID'].values:
+                index = dfData.loc[dfData['Formatted ID']==stvalue].index[0]
+                name = dfData['Name'][index]
+                sheet[predval] = (stvalue + " " + name)
 
-    sheet[start_date] = dfData['Planned Start Date'][ind]
-    sheet[end_date] = dfData['Planned End Date'][ind]
-    sheet[color] = colorConverter(str(dfData['Display Color'][ind]))
-    sheet[name] = dfData['Name'][ind]
-
-    sheet[live1] = getStringDate(dfData['Go Live Date'][ind]) 
-
-    number += 1
-
-
-for cell in sheet['C']:
-    if cell.value in pred['ID'].values:
-        predval = "E"+ str(cell.row)
-        index = pred[pred['ID']==cell.value]
-        stvalue = index['Predecessor ID'].values[0]
-        if stvalue in dfData['Formatted ID'].values:
-            index = dfData.loc[dfData['Formatted ID']==stvalue].index[0]
-            name = dfData['Name'][index]
-            sheet[predval] = (stvalue + " " + name)
-
-    if cell.value in succ['ID'].values:
-        succval = "F" + str(cell.row)
-        index = succ[succ['ID'] == cell.value]
-        stvalue = (index['Successor ID'].values[0])
-        if stvalue in dfData['Formatted ID'].values:
-            index = dfData.loc[dfData['Formatted ID']==stvalue].index[0]
-            name = dfData['Name'][index]
-            sheet[succval] = (stvalue + " " + name)
-       
+        if cell.value in succ['ID'].values:
+            succval = "F" + str(cell.row)
+            index = succ[succ['ID'] == cell.value]
+            stvalue = (index['Successor ID'].values[0])
+            if stvalue in dfData['Formatted ID'].values:
+                index = dfData.loc[dfData['Formatted ID']==stvalue].index[0]
+                name = dfData['Name'][index]
+                sheet[succval] = (stvalue + " " + name)
+        
 
  
 #modify this to file where gantt chart is displayed
-workbook.save(filename="Agile Gantt chart1.xlsx")
+workbook.save(filename= args.blank)

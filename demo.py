@@ -8,23 +8,23 @@ import numpy as np
 
 #use pandas
 
-def run():
+def run(preds, succ, file):
 
 
 
     #change this value to the csv file for the successors
-    dfSucc = pd.read_csv("feature-successors-5.csv")
+    dfSucc = pd.read_csv(succ)
 
 
 
     #change this value to the csv file for the predecessors
-    dfPred = pd.read_csv("feature-predecessors-5.csv")
+    dfPred = pd.read_csv(preds)
 
 
 
 
     #change this value to the csv file from rally
-    dfData = pd.read_csv("export-2.csv")
+    dfData = pd.read_csv(file)
 
 
     def addToDF (dfData,index, stack):
@@ -101,5 +101,5 @@ def run():
 
 
         
-    dfData.to_csv('test.csv')
+    dfData.to_csv(file)
     
