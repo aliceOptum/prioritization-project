@@ -28,7 +28,7 @@ def convertFeatures (features):
         output  = "QIB"
     elif "Specialty" in features:
         output = "SP"
-    elif "Consumer Engagement, Digital Therapeutic and Innovation Products	" in features:
+    elif "Consumer Engagement, Digital Therapeutic and Innovation Products" in features:
         output  = "CE DTI"
     elif "Commercial Medical Product" in features:
         output  = "CMP"
