@@ -24,7 +24,7 @@ def convertFeatures (features):
     output = "NA"
     if  "Data Migration" in features:
         output  = "DM"
-    elif "Quotes, Install and Bill" in features:
+    elif "Quote, Install & Bill	" in features:
         output  = "QIB"
     elif "Specialty" in features:
         output = "SP"
@@ -52,6 +52,8 @@ def convertFeatures (features):
         output = "DTI"
     elif  "Ops Reporting" in features:
         output = "OR"
+    elif "USP" in features:
+        output = "USP"
     return (output)
 
 
