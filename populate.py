@@ -1,3 +1,32 @@
+from xml.etree.ElementPath import prepare_descendant
+from openpyxl import load_workbook
+import pandas as pd
+import datetime
+import demo
+import argparse
+from openpyxl.styles import Color, PatternFill, Font, Border
+from openpyxl.styles import colors
+from openpyxl.cell import Cell
+
+"""
+def colorpicker():
+    red = PatternFill(color='00008080',
+                   fill_type='solid')
+
+    green =PatternFill(start_color= '96d4a7',
+                   end_color='96d4a7',
+                   fill_type='solid')
+    return(red)
+    
+"""
+
+
+
+
+
+
+
+
 def getStringDate (date):
     try:
         live = str(date)
@@ -57,14 +86,19 @@ def convertFeatures (features):
     return (output)
 
 
+def colorCell (number, color):
+    sheet["C" + str(number)].style = color
+    sheet["D" + str(number)].style = color
+    sheet["E" + str(number)].style = color
+    sheet["F" + str(number)].style = color
+    sheet["G" + str(number)].style = color
+    sheet["H" + str(number)].style = color
+    sheet["I" + str(number)].style = color
+    sheet["J" + str(number)].style = color
+    sheet["K" + str(number)].style = color
+    sheet["L" + str(number)].style = color
 
 
-from xml.etree.ElementPath import prepare_descendant
-from openpyxl import load_workbook
-import pandas as pd
-import datetime
-import demo
-import argparse
 
 
 parser = argparse.ArgumentParser()
@@ -79,7 +113,7 @@ demo.run(args.predecessors, args.successors, args.STs)
  
 
 #modify this to the excel file you are writing to 
-workbook = load_workbook(filename= args.blank)
+workbook = load_workbook(filename= args.blank, keep_vba= True)
 workbook.iso_dates = True
  
 #open workbook
@@ -123,6 +157,7 @@ for ind in dfData.index:
         sheet[end_date] = getStringDate(dfData['Planned End Date'][ind])
         sheet[color] = colorConverter(str(dfData['Display Color'][ind]))
         sheet[name] = dfData['Name'][ind]
+        sheet["Y" + str(number)] = dfData['Dependencies'][ind]
 
         sheet[live1] = getStringDate(dfData['Go Live Date'][ind]) 
 
@@ -147,6 +182,19 @@ for ind in dfData.index:
                 index = dfData.loc[dfData['Formatted ID']==stvalue].index[0]
                 name = dfData['Name'][index]
                 sheet[succval] = (stvalue + " " + name)
+"""
+for cell in sheet['F']:
+    next = cell.row + 1
+    print(next)
+    val = "C" + str(next)
+    thing =  str(sheet[val].value)
+    inCell = str(cell.value)
+    if thing in inCell:
+        color = colorpicker()
+        colorCell(cell.row, color)
+        colorCell (next, color )
+        
+"""
         
 
  
